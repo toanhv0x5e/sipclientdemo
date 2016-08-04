@@ -10,48 +10,89 @@
 Linux:
 
 ```sh
-sh requirements.sh
+# test
 ```
-
-demo
-
-demo
-
-demo
 
 ## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+Tài khoản dùng để test:
+
+
+    SIP Address: 123host01@sip2sip.info
+    Username: 123host01
+    Domain/Realm: sip2sip.info
+
+    SIP Address: 123host02@sip2sip.info
+    Username: 123host02
+    Domain/Realm: sip2sip.info
+
+    Password: 12345678a@
+
+Xem thông tin tài khoản:
+
+![https://mdns.sipthor.net/sip_settings.phtml](https://mdns.sipthor.net/sip_settings.phtml)
+
+Chạy phần mềm SIP Client trên 2 Host khác nhau:
+
+Host 1: 
+
+    python sipclient.py
+    ---
+    sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)
+
+    Your SIP URL [sip:123host01@sip2sip.info]: [enter-để-giữ-mặc-định]
+    URL of the registrar [sip:sip2sip.info]: [enter-để-giữ-mặc-định]
+    URL of the proxy [sip:proxy.sipthor.net;lr]: [enter-để-giữ-mặc-định]
+    Auth Realm [sip2sip.info]: [enter-để-giữ-mặc-định]
+    Auth Username [123host01@sip2sip.info]: [enter-để-giữ-mặc-định]
+    Auth Password [12345678a@]: [enter-để-giữ-mặc-định]
+    ---------------------------------------------------------------------
+    22:06:54.007    pjsua_acc.c !....sip:123host01@sip2sip.info: registration success, status=200 (OK), will re-register in 300 seconds
+
+    Registration complete, status= 200 (OK)
+
+    ---------------------------------------------------------------------
+    My SIP URI:  sip:123host01@sip2sip.info:50643
+    Menu:  m=make call, h=hangup call, a=answer call, q=quit
+
+Host 2: 
+
+    python sipclient.py
+    ---
+    sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)
+
+    Your SIP URL [sip:123host01@sip2sip.info]: sip:123host01@sip2sip.info
+    URL of the registrar [sip:sip2sip.info]: [enter-để-giữ-mặc-định]
+    URL of the proxy [sip:proxy.sipthor.net;lr]: [enter-để-giữ-mặc-định]
+    Auth Realm [sip2sip.info]: [enter-để-giữ-mặc-định]
+    Auth Username [123host01@sip2sip.info]: 123host02@sip2sip.info
+    Auth Password [12345678a@]: [enter-để-giữ-mặc-định]
+    ---------------------------------------------------------------------
+    22:06:54.007    pjsua_acc.c !....sip:123host02@sip2sip.info: registration success, status=200 (OK), will re-register in 300 seconds
+
+    Registration complete, status= 200 (OK)
+
+    ---------------------------------------------------------------------
+    My SIP URI:  sip:123host02@sip2sip.info:50643
+    Menu:  m=make call, h=hangup call, a=answer call, q=quit
+
 
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+Test
 
 ```sh
-make install
-npm test
+test
 ```
 
 ## Release History
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
+* 1.0.0
     * Work in progress
 
 ## Meta
 
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
-
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Van Toan Ha
 
 [https://github.com/hardw0rk/](https://github.com/hardw0rk/)
 
