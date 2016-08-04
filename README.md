@@ -17,7 +17,6 @@ Linux:
 
 - Tài khoản dùng để test:
 
-
     SIP Address: 123host01@sip2sip.info
     Username: 123host01
     Domain/Realm: sip2sip.info
