@@ -1,9 +1,13 @@
 # sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API) 
 # Edited by: Ha Van Toan 
 # Email: hatoan[dot]vniss[at]gmail[dot]com 
-# Last edit: 02/08/2016 
+# Last edit: 04/08/2016 
 
 import sys
+import os
+import threading
+import wave
+from time import sleep
 # https://trac.pjsip.org/repos/wiki/Python_SIP/Settings#InstantiatetheLibrary
 import pjsua as pj
 
@@ -21,7 +25,7 @@ def log_cb(level, str, len):
 class MyAccountCallback(pj.AccountCallback):
     sem = None # variable to determine register status
 
-    def __init__(self, account):
+    def __init__(self, account=None):
         pj.AccountCallback.__init__(self, account)
 
     # Wait for register
@@ -33,7 +37,7 @@ class MyAccountCallback(pj.AccountCallback):
         if self.sem:
             if self.account.info().reg_status >= 200:
                 self.sem.release()
-
+    '''
     # Notification on incoming call
     def on_incoming_call(self, call):
         global current_call 
@@ -50,7 +54,7 @@ class MyAccountCallback(pj.AccountCallback):
         current_call.set_callback(call_cb)
 
         current_call.answer(180)
-
+    '''
 # https://trac.pjsip.org/repos/wiki/Python_SIP/Calls#HandlingCallEvents
 # http://www.pjsip.org/python/pjsua.htm#CallCallback
 class MyCallCallback(pj.CallCallback):
@@ -59,95 +63,145 @@ class MyCallCallback(pj.CallCallback):
 
     # Notification when call state has changed
     def on_state(self):
-        print "Call is ", self.call.info().state_text,
+        global current_call
+        global in_call
+        print "Call with", self.call.info().remote_uri,
+        print "is", self.call.info().state_text,
         print "last code =", self.call.info().last_code, 
         print "(" + self.call.info().last_reason + ")"
+        
+        if self.call.info().state == pj.CallState.DISCONNECTED:
+            current_call = None
+            print 'Current call is', current_call
+            in_call = False
+        elif self.call.info().state == pj.CallState.CONFIRMED:
+            # Call is Answered
+            print "Call Answered"
+            wfile = wave.open("free.wav")
+            time = (1.0 * wfile.getnframes ()) / wfile.getframerate ()
+            print str(time) + "ms"
+            wfile.close()
+            call_slot = self.call.info().conf_slot
+            self.wav_player_id=pj.Lib.instance().create_player('free.wav',loop=False)
+            self.wav_slot=pj.Lib.instance().player_get_slot(self.wav_player_id)
+            pj.Lib.instance().conf_connect(self.wav_slot, call_slot)
+            sleep(time)
+            pj.Lib.instance().player_destroy(self.wav_player_id)
+            self.call.hangup()
+            in_call = False
 
     # Notification when call's media state has changed.
     def on_media_state(self):
-        if self.call.info().media_state == pjsua.MediaState.ACTIVE:
+        if self.call.info().media_state == pj.MediaState.ACTIVE:
             print "Media is now active"
         else:
             print "Media is inactive"
 
-    # Notification when call's media state has changed.
-    def on_media_state(self):
-        global lib
-        if self.call.info().media_state == pj.MediaState.ACTIVE:
-            # Connect the call to sound device
-            call_slot = self.call.info().conf_slot
-            lib.conf_connect(call_slot, 0)
-            lib.conf_connect(0, call_slot)
-            print "Hello world, I can talk!"
+# Function to make call
+def make_call(uri):
+    try:
+        print "Making call to", uri
+        return acc.make_call(uri, cb=MyCallCallback())
+    except pj.Error, e:
+        print "Exception: " + str(e)
+        return None
 
-def
-    acc_cfg = pj.AccountConfig()
-    acc_cfg.id = "sip:123host01@sip2sip.info"
-    acc_cfg.reg_uri = "sip:sip2sip.info"
-    #acc_cfg.reg_uri = "sip:sip2sip.info;transport=tls"
-    acc_cfg.proxy = [ "sip:proxy.sipthor.net;lr" ]
-    acc_cfg.auth_cred = [pj.AuthCred(
-        realm="sip2sip.info",
-        username="123host01",
-        passwd="12345678a@",
-    )]
-
-    acc_cb = MyAccountCallback(acc_cfg)
-    acc = lib.create_account(acc_cfg, cb=acc_cb)
-    
-    acc_cb.wait()
-    print "\n"
-    print "Registration complete, status=", acc.info().reg_status, \
-          "(" + acc.info().reg_reason + ")"
+def cb_func(pid) :
+    print '%s playback is done' % pid
+    current_call.hangup()
 
 
 try:
     # http://www.pjsip.org/python/pjsua.htm#UAConfig
     my_ua_cfg = pj.UAConfig()
-    my_ua_cfg.nameserver = ['8.8.8.8', '8.8.4.4'] # Example: Google Public DNS
-    #my_ua_cfg.stun_host = "stun.pjsip.org"
+    my_ua_cfg.nameserver = ['8.8.8.8', '8.8.4.4']
+    my_ua_cfg.user_agent = "123Host SIP Client"
     # http://www.pjsip.org/python/pjsua.htm#MediaConfig
     my_media_cfg = pj.MediaConfig()
     my_media_cfg.enable_ice = True
     
+    #
     # Procedure: Initialize > Create Transpot > Start > Handle calls > Shutdown
+    #
+
     # https://trac.pjsip.org/repos/wiki/Python_SIP/Settings#StartupandShutdown
     # Initialize the Library
     lib.init(ua_cfg=my_ua_cfg, media_cfg=my_media_cfg, log_cfg = pj.LogConfig(level=3, callback=log_cb))
     
     # Create One or More Transports
-    lib.create_transport(pjsua.TransportType.UDP, pjsua.TransportConfig(5080))
+    transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig(0))
     #transport = lib.create_transport(pj.TransportType.TLS, pj.TransportConfig(port=5060)) # SSL
     lib.set_null_snd_dev()
-    #print "\nListening on", transport.info().host, 
-    #print "port", transport.info().port, "\n"
 
     # Starting the Library
     lib.start()
     lib.handle_events()
 
-    ############################
-    # Handle calls
-    # Create local/user-less account, example: "sip:127.0.0.1"
-    acc_cb = MyAccountCallback()
-    acc = lib.create_account_for_transport(transport, cb=acc_cb)
+    #
+    # Registration
+    #
+    acc_cfg = pj.AccountConfig()
+    os.system('clear')
+    print "sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)"
+    print ""
+    #
+    acc_cfg.id = raw_input("Your SIP URL [sip:123host01@sip2sip.info]: ")
+    if ((acc_cfg.id) and len(acc_cfg.id) > 0):
+        pass
+    else:
+        acc_cfg.id = "sip:123host01@sip2sip.info"
+    #
+    acc_cfg.reg_uri  = raw_input("URL of the registrar [sip:sip2sip.info]: ")
+    if ((acc_cfg.reg_uri) and len(acc_cfg.reg_uri) > 0):
+        pass
+    else:
+        acc_cfg.reg_uri  = "sip:sip2sip.info"
+    #
+    acc_cfg.proxy = [] 
+    proxy = raw_input("URL of the proxy [sip:proxy.sipthor.net;lr]: ")
+    acc_cfg.proxy.append(proxy)
+    if ((proxy) and len(proxy) > 0):
+        pass
+    else:
+        acc_cfg.proxy = [ "sip:proxy.sipthor.net;lr" ]
+    #
+    realm = raw_input("Auth Realm [sip2sip.info]: ")
+    if ((realm) and len(realm) > 0):
+        pass
+    else:
+        realm = "sip2sip.info"
+    #
+    username = raw_input("Auth Username [123host01@sip2sip.info]: ")
+    if ((username) and len(username) > 0):
+        pass
+    else:
+        username = "123host01@sip2sip.info"
+    #
+    passwd = raw_input("Auth Password [12345678a@]: ")
+    if ((passwd) and len(passwd) > 0):
+        pass
+    else:
+        passwd = "12345678a@"
+    print "---------------------------------------------------------------------"
 
-    # https://trac.pjsip.org/repos/wiki/Python_SIP/Calls#MakingOutgoingCalls
-    dst_uri="sip:127.0.0.1:5060"
-    my_cb = MyCallCallback()
-    call = acc.make_call(dst_uri, cb=my_cb)
+    acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
+    
+    acc_cb = MyAccountCallback(acc_cfg)
+    acc = lib.create_account(acc_cfg, cb=acc_cb)
+    
+    acc_cb.wait()
+    print ""
+    print "Registration complete, status=", acc.info().reg_status, \
+          "(" + acc.info().reg_reason + ")"
 
-    # Wait for ENTER before quitting
-    print "Press <ENTER> to quit"
-    input = sys.stdin.readline().rstrip("\r\n")
-
-    ############################
+    my_sip_uri = acc_cfg.id + ":" + str(transport.info().port)
 
     # Menu loop
     while True:
-        print "My SIP URI is", my_sip_uri
+        print ""
+        print "---------------------------------------------------------------------"
+        print "My SIP URI: ", my_sip_uri
         print "Menu:  m=make call, h=hangup call, a=answer call, q=quit"
-
         input = sys.stdin.readline().rstrip("\r\n")
         if input == "m":
             if current_call:
@@ -157,57 +211,39 @@ try:
             input = sys.stdin.readline().rstrip("\r\n")
             if input == "":
                 continue
+            in_call = True
             lck = lib.auto_lock()
             current_call = make_call(input)
+            print 'Current call is', current_call
             del lck
-
+            # Wait for the call to end before shuting down
+            while in_call:
+                pass
         elif input == "h":
             if not current_call:
                 print "There is no call"
                 continue
             current_call.hangup()
-
         elif input == "a":
             if not current_call:
                 print "There is no call"
                 continue
             current_call.answer(200)
-
         elif input == "q":
             break
-
 
     # Shutting Down the Library
     lib.destroy()
     lib = None
+    transport = None
+    acc_cb.delete()
+    acc_cb = None
 
-except pj.Error, err:
+
+except pj.Error, e:
     print "Exception: " + str(e)
     # Handle if throw exception, will shutdown library and termination
     lib.destroy()
     lib = None
     sys.exit(1)
-    #exit(0): EXIT_SUCCESS -- successful termination. This causes the program to exit with a successful termination.
-    #exit(1): EXIT_FAILURE -- unsuccessful termination. This causes the program to exit with a system-specific meaning.
 
-# Generate free.wav
-
-# festival is a tool text-to-speech
-#sudo pacman -S festival festival-us
-
-# text2wave is a tool convert text-to-speech to wav
-#text2wave -o free.wav message.txt
-
-# Account SIP
-
-#SIP Address    123host01@sip2sip.info
-#Username       123host01
-#Domain/Realm   sip2sip.info
-
-#SIP Address    123host02@sip2sip.info
-#Username       123host02
-#Domain/Realm   sip2sip.info
-
-#Password       12345678a@
-
-# Source code uploaded to VPS: 103.255.236.99
