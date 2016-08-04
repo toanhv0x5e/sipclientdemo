@@ -9,3 +9,7 @@ sudo add-apt-repository ppa:dennis.guse/sip-tools
 sudo apt-get update 
 sudo apt-get install python-pjsua
 sudo apt-get install python-pjsua2
+
+
+# export CFLAGS="$CFLAGS -fPIC"
+# ./configure
