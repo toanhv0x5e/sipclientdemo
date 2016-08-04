@@ -15,7 +15,7 @@ Linux:
 
 ## Usage example
 
-Tài khoản dùng để test:
+- Tài khoản dùng để test:
 
 
     SIP Address: 123host01@sip2sip.info
@@ -28,11 +28,11 @@ Tài khoản dùng để test:
 
     Password: 12345678a@
 
-Xem thông tin tài khoản:
+- Xem thông tin tài khoản:
 
 ![https://mdns.sipthor.net/sip_settings.phtml](https://mdns.sipthor.net/sip_settings.phtml)
 
-Chạy phần mềm SIP Client trên 2 Host khác nhau:
+- Chạy phần mềm SIP Client trên 2 Host khác nhau:
 
 Host 1: 
 
