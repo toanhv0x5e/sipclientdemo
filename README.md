@@ -3,23 +3,21 @@
 
 [![Build Status][travis-image]][travis-url]
 
-One to two paragraph statement about your product and what it does.
-
 ![](header.png)
 
 ## Installation
 
-OS X & Linux:
+Linux:
 
 ```sh
-npm install my-crazy-module --save
+sh requirements.sh
 ```
 
-Windows:
+demo
 
-```sh
-edit autoexec.bat
-```
+demo
+
+demo
 
 ## Usage example
 
@@ -55,7 +53,7 @@ Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@examp
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[https://github.com/hardw0rk/](https://github.com/hardw0rk/)
 
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
+[travis-image]: https://img.shields.io/travis/hardw0rk/sipclientdemo/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/hardw0rk/sipclientdemo
