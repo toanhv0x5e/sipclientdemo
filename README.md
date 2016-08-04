@@ -17,15 +17,17 @@ Linux:
 
 - Tài khoản dùng để test:
 
-    SIP Address: 123host01@sip2sip.info
-    Username: 123host01
-    Domain/Realm: sip2sip.info
+```
+SIP Address: 123host01@sip2sip.info
+Username: 123host01
+Domain/Realm: sip2sip.info
 
-    SIP Address: 123host02@sip2sip.info
-    Username: 123host02
-    Domain/Realm: sip2sip.info
+SIP Address: 123host02@sip2sip.info
+Username: 123host02
+Domain/Realm: sip2sip.info
 
-    Password: 12345678a@
+Password: 12345678a@
+```
 
 - Xem thông tin tài khoản:
 
