@@ -2,9 +2,9 @@ language: python
 python:
   - "2.7"
 install: 
-  - echo "pip install -r requirements.txt --use-mirrors"
+  - #pip install -r requirements.txt --use-mirrors
 script:
   - nosetests
-  - sh requirements.sh
+  - #sh requirements.sh
 notifications:
 email: false
