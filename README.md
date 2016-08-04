@@ -31,7 +31,7 @@ Password: 12345678a@
 
 - Xem thông tin tài khoản:
 
-![https://mdns.sipthor.net/sip_settings.phtml](https://mdns.sipthor.net/sip_settings.phtml)
+![https://mdns.sipthor.net/](https://mdns.sipthor.net/)
 
 - Chạy phần mềm SIP Client trên 2 Host khác nhau:
 
