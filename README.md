@@ -61,7 +61,7 @@ Host 2:
     ---
     sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)
 
-    Your SIP URL [sip:123host01@sip2sip.info]: sip:123host01@sip2sip.info
+    Your SIP URL [sip:123host01@sip2sip.info]: sip:123host02@sip2sip.info
     URL of the registrar [sip:sip2sip.info]: [enter-để-giữ-mặc-định]
     URL of the proxy [sip:proxy.sipthor.net;lr]: [enter-để-giữ-mặc-định]
     Auth Realm [sip2sip.info]: [enter-để-giữ-mặc-định]
