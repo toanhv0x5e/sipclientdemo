@@ -27,3 +27,14 @@ cd pjsip-apps/src/python
 sudo python ./setup.py install
 
 echo 'Installation module successful !'
+
+echo '--------------------------------'
+
+echo 'Test run application'
+
+cd
+
+cd sipclientdemo
+
+python sipclient.py
+
