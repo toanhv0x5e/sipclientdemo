@@ -10,5 +10,6 @@
 #sudo apt-get install python-pjsua
 #sudo apt-get install python-pjsua2
 
-sudo apt-get install make, gcc, and binutils
+#sudo apt-get install make, gcc, and binutils
+apt-get install make, gcc, and binutils
 
