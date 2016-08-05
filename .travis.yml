@@ -5,10 +5,11 @@ sudo: required
 before_install:
   - chmod +x requirements.sh
   - chmod +x build.sh
-install:
+before_script:
   - #pip install -r requirements.txt --use-mirrors
   - ./requirements.sh
   - ./build.sh
+install:
 script:
   - nosetests
 notifications:
