@@ -20,6 +20,6 @@ before_script:
   - #echo 'Installation module successful !'
 install:
 script:
-  - nosetests
+  - #nosetests
 notifications:
 email: false
