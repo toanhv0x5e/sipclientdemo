@@ -3,11 +3,11 @@ python:
   - "2.7"
 before_install:
   - chmod +x requirements.sh
-  - chmod +x build.sh
+  - chmod +x travis_build.sh
 install:
   - #pip install -r requirements.txt --use-mirrors
   - ./requirements.sh
-  - ./build.sh
+  - ./travis_build.sh
 script:
   - nosetests
 notifications:
