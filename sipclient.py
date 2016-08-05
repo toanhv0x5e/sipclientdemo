@@ -23,12 +23,11 @@ def log_cb(level, str, len):
 # https://trac.pjsip.org/repos/wiki/Python_SIP/Calls#ReceivingIncomingCalls
 # http://www.pjsip.org/python/pjsua.htm#AccountCallback
 class MyAccountCallback(pj.AccountCallback):
-    sem = None # variable to determine register status
+    sem = None
 
     def __init__(self, account=None):
         pj.AccountCallback.__init__(self, account)
 
-    # Wait for register
     def wait(self):
         self.sem = threading.Semaphore(0)
         self.sem.acquire()
@@ -37,7 +36,7 @@ class MyAccountCallback(pj.AccountCallback):
         if self.sem:
             if self.account.info().reg_status >= 200:
                 self.sem.release()
-    '''
+
     # Notification on incoming call
     def on_incoming_call(self, call):
         global current_call 
@@ -49,19 +48,18 @@ class MyAccountCallback(pj.AccountCallback):
         print "Press 'a' to answer"
 
         current_call = call
-
         call_cb = MyCallCallback(current_call)
         current_call.set_callback(call_cb)
 
         current_call.answer(180)
-    '''
+
 # https://trac.pjsip.org/repos/wiki/Python_SIP/Calls#HandlingCallEvents
 # http://www.pjsip.org/python/pjsua.htm#CallCallback
 class MyCallCallback(pj.CallCallback):
     def __init__(self, call=None):
         pj.CallCallback.__init__(self, call)
 
-    # Notification when call state has changed
+# Notification when call state has changed
     def on_state(self):
         global current_call
         global in_call
@@ -74,8 +72,9 @@ class MyCallCallback(pj.CallCallback):
             current_call = None
             print 'Current call is', current_call
             in_call = False
+
         elif self.call.info().state == pj.CallState.CONFIRMED:
-            # Call is Answered
+            #Call is Answered
             print "Call Answered"
             wfile = wave.open("free.wav")
             time = (1.0 * wfile.getnframes ()) / wfile.getframerate ()
@@ -96,6 +95,7 @@ class MyCallCallback(pj.CallCallback):
             print "Media is now active"
         else:
             print "Media is inactive"
+
 
 # Function to make call
 def make_call(uri):
@@ -129,7 +129,8 @@ try:
     lib.init(ua_cfg=my_ua_cfg, media_cfg=my_media_cfg, log_cfg = pj.LogConfig(level=3, callback=log_cb))
     
     # Create One or More Transports
-    transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig(0))
+    transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig())
+    #transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig(0))
     #transport = lib.create_transport(pj.TransportType.TLS, pj.TransportConfig(port=5060)) # SSL
     lib.set_null_snd_dev()
 
@@ -186,10 +187,10 @@ try:
 
     acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
     
-    acc_cb = MyAccountCallback(acc_cfg)
+    acc_cb = MyAccountCallback()
     acc = lib.create_account(acc_cfg, cb=acc_cb)
-    
     acc_cb.wait()
+
     print ""
     print "Registration complete, status=", acc.info().reg_status, \
           "(" + acc.info().reg_reason + ")"
@@ -211,14 +212,19 @@ try:
             input = sys.stdin.readline().rstrip("\r\n")
             if input == "":
                 continue
-            in_call = True
+
+            dst_uri=input
+
             lck = lib.auto_lock()
-            current_call = make_call(input)
+            in_call = True
+            current_call = make_call(dst_uri)
             print 'Current call is', current_call
             del lck
-            # Wait for the call to end before shuting down
+
+            #wait for the call to end before shuting down
             while in_call:
                 pass
+
         elif input == "h":
             if not current_call:
                 print "There is no call"
@@ -236,7 +242,7 @@ try:
     lib.destroy()
     lib = None
     transport = None
-    acc_cb.delete()
+    #acc_cb.delete()
     acc_cb = None
 
 
