@@ -1,5 +1,5 @@
 # SIP Client Demo
-> Just an SIP Client (VoIP) use pjsua python module
+> Just a SIP Client (VoIP) use pjsua python module
 
 [![Build Status][travis-image]][travis-url]
 
