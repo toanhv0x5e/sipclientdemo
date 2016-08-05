@@ -7,8 +7,8 @@ before_install:
   - chmod +x build.sh
 before_script:
   - #pip install -r requirements.txt --use-mirrors
-  - ./requirements.sh
-  - ./build.sh
+  - sh requirements.sh
+  - sh build.sh
 install:
 script:
   - nosetests
