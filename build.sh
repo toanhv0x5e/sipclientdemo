@@ -4,6 +4,8 @@ echo 'Build and Installation Module'
 
 echo 'Download source code:'
 
+cd /tmp
+
 wget http://www.pjsip.org/release/2.5.5/pjproject-2.5.5.tar.bz2
 
 tar xjvf pjproject-2.5.5.tar.bz2
