@@ -1,13 +1,14 @@
 language: python
 python:
   - "2.7"
+sudo: required
 before_install:
   - chmod +x requirements.sh
-  - chmod +x travis_build.sh
+  - chmod +x build.sh
 install:
   - #pip install -r requirements.txt --use-mirrors
   - ./requirements.sh
-  - ./travis_build.sh
+  - ./build.sh
 script:
   - nosetests
 notifications:
