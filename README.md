@@ -154,7 +154,7 @@ URL of the registrar [sip:sip2sip.info]: [enter-to-keep-default]
 URL of the proxy [sip:proxy.sipthor.net;lr]: [enter-to-keep-default]
 Auth Realm [sip2sip.info]: [enter-to-keep-default]
 Auth Username [123host01@sip2sip.info]: [enter-to-keep-default]
-Auth Password [12345678a@]: [enter-to-keep-default]
+Auth Password [**********]: [enter-to-keep-default]
 ---------------------------------------------------------------------
 22:06:54.007    pjsua_acc.c !....sip:123host01@sip2sip.info: registration success, status=200 (OK), will re-register in 300 seconds
 
@@ -177,7 +177,7 @@ URL of the registrar [sip:sip2sip.info]: [enter-to-keep-default]
 URL of the proxy [sip:proxy.sipthor.net;lr]: [enter-to-keep-default]
 Auth Realm [sip2sip.info]: [enter-to-keep-default]
 Auth Username [123host01@sip2sip.info]: 123host02@sip2sip.info
-Auth Password [12345678a@]: [enter-to-keep-default]
+Auth Password [**********]: [enter-to-keep-default]
 ---------------------------------------------------------------------
 22:06:54.007    pjsua_acc.c !....sip:123host02@sip2sip.info: registration success, status=200 (OK), will re-register in 300 seconds
 
