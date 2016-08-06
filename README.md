@@ -133,7 +133,7 @@ SIP Address: 123host02@sip2sip.info
 Username: 123host02
 Domain/Realm: sip2sip.info
 
-Password: 12345678a@
+Password: **********
 ```
 
 - Login to Home page to view account details:
