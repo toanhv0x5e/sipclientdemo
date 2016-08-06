@@ -37,7 +37,7 @@ acc_cfg.reg_uri  = "sip:103.255.236.60;transport=tcp"
 acc_cfg.proxy = [ "sip:103.255.236.60;transport=tcp;lr" ]
 realm = "asterisk"
 username = "6003"
-passwd = "************"
+passwd = "**********"
 
 ========================
 

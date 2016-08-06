@@ -186,11 +186,11 @@ try:
         else:
             username = "6003"
         #
-        passwd = raw_input("Auth Password [toan@Test!!!23]: ")
+        passwd = raw_input("Auth Password [**********]: ")
         if ((passwd) and len(passwd) > 0):
             pass
         else:
-            passwd = "toan@Test!!!23"
+            passwd = "**********"
         print "---------------------------------------------------------------------"
 
         acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
