@@ -1,7 +1,7 @@
 # sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API) 
 # Edited by: Ha Van Toan 
 # Email: hatoan[dot]vniss[at]gmail[dot]com 
-# Last edit: 04/08/2016 
+# Last edit: 06/08/2016 
 
 import sys
 import os
@@ -76,12 +76,12 @@ class MyCallCallback(pj.CallCallback):
         elif self.call.info().state == pj.CallState.CONFIRMED:
             #Call is Answered
             print "Call Answered"
-            wfile = wave.open("free.wav")
+            wfile = wave.open("message.wav")
             time = (1.0 * wfile.getnframes ()) / wfile.getframerate ()
             print str(time) + "ms"
             wfile.close()
             call_slot = self.call.info().conf_slot
-            self.wav_player_id=pj.Lib.instance().create_player('free.wav',loop=False)
+            self.wav_player_id=pj.Lib.instance().create_player('message.wav',loop=False)
             self.wav_slot=pj.Lib.instance().player_get_slot(self.wav_player_id)
             pj.Lib.instance().conf_connect(self.wav_slot, call_slot)
             sleep(time)
@@ -129,7 +129,7 @@ try:
     lib.init(ua_cfg=my_ua_cfg, media_cfg=my_media_cfg, log_cfg = pj.LogConfig(level=3, callback=log_cb))
     
     # Create One or More Transports
-    transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig())
+    transport = lib.create_transport(pj.TransportType.TCP, pj.TransportConfig())
     #transport = lib.create_transport(pj.TransportType.UDP, pj.TransportConfig(0))
     #transport = lib.create_transport(pj.TransportType.TLS, pj.TransportConfig(port=5060)) # SSL
     lib.set_null_snd_dev()
@@ -146,51 +146,70 @@ try:
     print "sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)"
     print ""
     #
-    acc_cfg.id = raw_input("Your SIP URL [sip:6003@103.255.236.60]: ")
-    if ((acc_cfg.id) and len(acc_cfg.id) > 0):
-        pass
-    else:
-        acc_cfg.id = "sip:6003@103.255.236.60"
-    #
-    acc_cfg.reg_uri  = raw_input("URL of the registrar [sip:103.255.236.60]: ")
-    if ((acc_cfg.reg_uri) and len(acc_cfg.reg_uri) > 0):
-        pass
-    else:
-        acc_cfg.reg_uri  = "sip:103.255.236.60"
-    #
-    acc_cfg.proxy = [] 
-    proxy = raw_input("URL of the proxy [sip:103.255.236.60;lr]: ")
-    acc_cfg.proxy.append(proxy)
-    if ((proxy) and len(proxy) > 0):
-        pass
-    else:
-        acc_cfg.proxy = [ "sip:103.255.236.60;lr" ]
-    #
-    realm = raw_input("Auth Realm [asterisk]: ")
-    if ((realm) and len(realm) > 0):
-        pass
-    else:
-        realm = "asterisk"
-    #
-    username = raw_input("Auth Username [6003]: ")
-    if ((username) and len(username) > 0):
-        pass
-    else:
-        username = "6003"
-    #
-    passwd = raw_input("Auth Password [toan@Test!!!23]: ")
-    if ((passwd) and len(passwd) > 0):
-        pass
-    else:
-        passwd = "toan@Test!!!23"
-    print "---------------------------------------------------------------------"
+    print "Registration:"
+    succeed = 0
+    while (succeed == 0):
+        print "---------------------------------------------------------------------"
+        acc_cfg.id = raw_input("Your SIP URL [sip:6003@103.255.236.60]: ")
+        if ((acc_cfg.id) and len(acc_cfg.id) > 0):
+            pass
+        else:
+            acc_cfg.id = "sip:6003@103.255.236.60"
+        #
+        acc_cfg.reg_uri  = raw_input("URL of the registrar [sip:103.255.236.60]: ")
+        if ((acc_cfg.reg_uri) and len(acc_cfg.reg_uri) > 0):
+            acc_cfg.reg_uri += ";transport=tcp"
+            pass
+        else:
+            acc_cfg.reg_uri  = "sip:103.255.236.60;transport=tcp"
+        #
+        acc_cfg.proxy = [] 
+        proxy = raw_input("URL of the proxy [sip:103.255.236.60]: ")
+        if ((proxy) and len(proxy) > 0):
+            server = proxy.split(':')
+            proxy  += ";transport=tcp;lr"
+            acc_cfg.proxy.append(proxy)
+            pass
+        else:
+            server = "103.255.236.60"
+            acc_cfg.proxy = [ "sip:103.255.236.60;transport=tcp;lr" ]
+        #
+        realm = raw_input("Auth Realm [asterisk]: ")
+        if ((realm) and len(realm) > 0):
+            pass
+        else:
+            realm = "asterisk"
+        #
+        username = raw_input("Auth Username [6003]: ")
+        if ((username) and len(username) > 0):
+            pass
+        else:
+            username = "6003"
+        #
+        passwd = raw_input("Auth Password [toan@Test!!!23]: ")
+        if ((passwd) and len(passwd) > 0):
+            pass
+        else:
+            passwd = "toan@Test!!!23"
+        print "---------------------------------------------------------------------"
 
-    acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
-    
-    acc_cb = MyAccountCallback()
-    acc = lib.create_account(acc_cfg, cb=acc_cb)
-    acc_cb.wait()
+        acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
+        
+        acc_cb = MyAccountCallback()
+        acc = lib.create_account(acc_cfg, cb=acc_cb)
+        acc_cb.wait()
 
+        # Conditions are not correct, because when "IP address change detected for account", all other accounts is Forbidden
+        if ((str(acc.info().reg_status) == "200") or (str(acc.info().reg_status) == "403")):
+            succeed = 1
+        else:
+            print ""
+            print "Registration failed, status=", acc.info().reg_status, \
+              "(" + acc.info().reg_reason + ")"
+            print ""
+            print "Please try again !"
+
+    # Register successful
     print ""
     print "Registration complete, status=", acc.info().reg_status, \
           "(" + acc.info().reg_reason + ")"
@@ -208,12 +227,12 @@ try:
             if current_call:
                 print "Already have another call"
                 continue
-            print "Enter destination URI to call: ", 
+            print "Enter destination to call [user or phone number]: ", 
             input = sys.stdin.readline().rstrip("\r\n")
             if input == "":
                 continue
 
-            dst_uri=input
+            dst_uri = "sip:" + input  + "@" + server
 
             lck = lib.auto_lock()
             in_call = True

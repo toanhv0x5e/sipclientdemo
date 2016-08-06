@@ -117,7 +117,7 @@ echo 'hello, i am a 123host technical' | festival --tts
 Text-to-speech to wav:
 
 ```
-text2wave -o free.wav message.txt
+text2wave -o message.wav message.txt
 ```
 
 **2. How to use**
