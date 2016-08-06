@@ -146,43 +146,43 @@ try:
     print "sipclient.py -- Simple SIP Client use PJSUA Python Module (PJSIP API)"
     print ""
     #
-    acc_cfg.id = raw_input("Your SIP URL [sip:6003@103.255.236.60]: ")
+    acc_cfg.id = raw_input("Your SIP URL [sip:123host01@sip2sip.info]: ")
     if ((acc_cfg.id) and len(acc_cfg.id) > 0):
         pass
     else:
-        acc_cfg.id = "sip:6003@103.255.236.60"
+        acc_cfg.id = "sip:123host01@sip2sip.info"
     #
-    acc_cfg.reg_uri  = raw_input("URL of the registrar [sip:103.255.236.60]: ")
+    acc_cfg.reg_uri  = raw_input("URL of the registrar [sip:sip2sip.info]: ")
     if ((acc_cfg.reg_uri) and len(acc_cfg.reg_uri) > 0):
         pass
     else:
-        acc_cfg.reg_uri  = "sip:103.255.236.60"
+        acc_cfg.reg_uri  = "sip:sip2sip.info"
     #
     acc_cfg.proxy = [] 
-    proxy = raw_input("URL of the proxy [sip:103.255.236.60;lr]: ")
+    proxy = raw_input("URL of the proxy [sip:proxy.sipthor.net;lr]: ")
     acc_cfg.proxy.append(proxy)
     if ((proxy) and len(proxy) > 0):
         pass
     else:
-        acc_cfg.proxy = [ "sip:103.255.236.60;lr" ]
+        acc_cfg.proxy = [ "sip:proxy.sipthor.net;lr" ]
     #
-    realm = raw_input("Auth Realm [asterisk]: ")
+    realm = raw_input("Auth Realm [sip2sip.info]: ")
     if ((realm) and len(realm) > 0):
         pass
     else:
-        realm = "asterisk"
+        realm = "sip2sip.info"
     #
-    username = raw_input("Auth Username [6003]: ")
+    username = raw_input("Auth Username [123host01@sip2sip.info]: ")
     if ((username) and len(username) > 0):
         pass
     else:
-        username = "6003"
+        username = "123host01@sip2sip.info"
     #
-    passwd = raw_input("Auth Password [toan@Test!!!23]: ")
+    passwd = raw_input("Auth Password [12345678a@]: ")
     if ((passwd) and len(passwd) > 0):
         pass
     else:
-        passwd = "toan@Test!!!23"
+        passwd = "12345678a@"
     print "---------------------------------------------------------------------"
 
     acc_cfg.auth_cred = [pj.AuthCred(realm, username ,passwd)]
