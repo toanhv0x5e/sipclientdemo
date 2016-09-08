@@ -1,0 +1,53 @@
+CHANGELOGS
+
+========================
+
+Error #1:
+
+Enter destination URI to call: sip:01642557xxx@A.B.C.D
+ Making call to sip:01642557xxx@A.B.C.D
+Current call is {Call sip:01642557xxx@A.B.C.D}
+10:01:28.238 tsx0x7f0d5c00e  ...Temporary failure in sending Request msg INVITE/cseq=5568 (tdta0x7f0d5c00bad0), will try next server: Unsupported transport (PJSIP_EUNSUPTRANSPORT)
+Call with sip:01642557xxx@A.B.C.D is CALLING last code = 0 ()
+Call with sip:01642557xxx@A.B.C.D is DISCONNCTD last code = 408 (Request Timeout)
+Current call is None
+
+
+Patch #1: 
+
+* Reference: 
+    https://trac.pjsip.org/repos/wiki/Using_SIP_TCP 
+    http://pjsip.pjsip.narkive.com/He87zFvS/unsupported-transport
+
+[quote]
+As the error says, the error is not permanent, as PJSIP will send the request anyway with UDP.
+
+This TCP switching feature can be disabled as follows:
+
+    at run-time by setting pjsip_cfg()->endpt.disable_tcp_switch to PJ_TRUE.
+    at-compile time by setting PJSIP_DONT_SWITCH_TO_TCP to non-zero 
+
+You can also tweak the 1300 threshold by setting PJSIP_UDP_SIZE_THRESHOLD to the appropriate value. 
+[/quote]
+
+* How to fix: add ";transport=tcp" to URI.
+
+acc_cfg.id = "sip:6003@A.B.C.D"
+acc_cfg.reg_uri  = "sip:A.B.C.D;transport=tcp"
+acc_cfg.proxy = [ "sip:A.B.C.D;transport=tcp;lr" ]
+realm = "asterisk"
+username = "6003"
+passwd = "**********"
+
+========================
+
+Error #2: 
+
+Idle when dst_uri invalid
+
+Patch #2:
+
+Check if dst_uri vaild before make call
+
+========================
+
